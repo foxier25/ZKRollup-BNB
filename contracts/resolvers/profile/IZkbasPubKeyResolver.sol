@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.6;
 
-interface IZkbasPubKeyResolver {
+interface IBNB-ZKRollupPubKeyResolver {
 
-    event ZkbasPubKeyChanged(bytes32 indexed node, bytes32 pubKeyX, bytes32 pubKeyY);
+    event BNB-ZKRollupPubKeyChanged(bytes32 indexed node, bytes32 pubKeyX, bytes32 pubKeyY);
 
     /**
      * Returns the public key in L2 associated with an ZNS node.
@@ -11,5 +11,5 @@ interface IZkbasPubKeyResolver {
      * @return pubKeyX The public key in L2 owns this node
      * @return pubKeyY The public key in L2 owns this node
      */
-    function zkbasPubKey(bytes32 node) external view returns (bytes32 pubKeyX, bytes32 pubKeyY);
+    function BNB-ZKRollupPubKey(bytes32 node) external view returns (bytes32 pubKeyX, bytes32 pubKeyY);
 }

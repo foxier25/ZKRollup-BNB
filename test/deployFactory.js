@@ -3,20 +3,20 @@ const {ethers} = require("hardhat");
 const namehash = require("eth-ens-namehash");
 // const {mimc} = require("mimcjs");
 
-describe("Zkbas contract", function () {
+describe("BNB-ZKRollup contract", function () {
 
     let owner, governor, addr1, addr2, addrs;
     let ZNSRegistry, znsRegistry;
     let ZNSController, znsController;
     let ZNSPriceOracle, znsPriceOracle;
     let PublicResolver, znsResolver;
-    let Zkbas, zkbas;
+    let BNB-ZKRollup, BNB-ZKRollup;
     let Verifier, verifier;
     let Governance, governance;
     let AssetGovernance, assetGovernance;
     let DeployFactory, deployFactory, deployFactoryTx, deployFactoryTxReceipt;
     let UpgradeGatekeeper, upgradeGatekeeper;
-    let Proxy, zkbasProxy, znsControllerProxy;
+    let Proxy, BNB-ZKRollupProxy, znsControllerProxy;
     let Utils, utils;
 
     // `beforeEach` will run before each test, re-deploying the contract every
@@ -40,20 +40,20 @@ describe("Zkbas contract", function () {
         // assetGovernance = await AssetGovernance.deploy()
         // await assetGovernance.deployed()
         // verifier
-        Verifier = await ethers.getContractFactory('ZkbasVerifier')
+        Verifier = await ethers.getContractFactory('BNB-ZKRollupVerifier')
         verifier = await Verifier.deploy()
         await verifier.deployed()
-        // zkbas with utils
+        // BNB-ZKRollup with utils
         const Utils = await ethers.getContractFactory("Utils")
         const utils = await Utils.deploy()
         await utils.deployed()
-        Zkbas = await ethers.getContractFactory('Zkbas', {
+        BNB-ZKRollup = await ethers.getContractFactory('BNB-ZKRollup', {
             libraries: {
                 Utils: utils.address
             }
         })
-        zkbas = await Zkbas.deploy()
-        await zkbas.deployed()
+        BNB-ZKRollup = await BNB-ZKRollup.deploy()
+        await BNB-ZKRollup.deployed()
         // ZNS controller
         ZNSController = await ethers.getContractFactory('ZNSController');
         znsController = await ZNSController.deploy();
@@ -75,7 +75,7 @@ describe("Zkbas contract", function () {
         const baseNode = namehash.hash('legend');
         DeployFactory = await ethers.getContractFactory("DeployFactory");
         deployFactory = await DeployFactory.connect(owner).deploy(
-            governance.address, verifier.address, zkbas.address, znsController.address, znsResolver.address,
+            governance.address, verifier.address, BNB-ZKRollup.address, znsController.address, znsResolver.address,
             _genesisAccountRoot, verifier.address, governor, governance.address, _listingFee, _listingCap,
             znsRegistry.address, znsPriceOracle.address, baseNode
         );
@@ -84,7 +84,7 @@ describe("Zkbas contract", function () {
         // they are used for invoking methods.
         deployFactoryTx = await deployFactory.deployTransaction;
         deployFactoryTxReceipt = await deployFactoryTx.wait();
-        const AddressesInterface = new ethers.utils.Interface(["event Addresses(address governance, address assetGovernance, address verifier, address znsController, address znsResolver, address zkbas, address gatekeeper)"]);
+        const AddressesInterface = new ethers.utils.Interface(["event Addresses(address governance, address assetGovernance, address verifier, address znsController, address znsResolver, address BNB-ZKRollup, address gatekeeper)"]);
         // The event 2 is the required event.
         // console.log(deployFactoryTxReceipt.logs)
         let event = AddressesInterface.decodeEventLog("Addresses", deployFactoryTxReceipt.logs[8].data, deployFactoryTxReceipt.logs[8].topics);
@@ -92,7 +92,7 @@ describe("Zkbas contract", function () {
         // console.log(event)
         assetGovernance = AssetGovernance.attach(event[1])
         znsControllerProxy = ZNSController.attach(event[3])
-        zkbasProxy = Zkbas.attach(event[5])
+        BNB-ZKRollupProxy = BNB-ZKRollup.attach(event[5])
 
         // Step 4: register zns base node
         const rootNode = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -102,36 +102,36 @@ describe("Zkbas contract", function () {
         expect(await znsRegistry.owner(baseNode)).to.equal(await znsControllerProxy.address);
     });
 
-    describe('Zkbas Deploy Test', function () {
+    describe('BNB-ZKRollup Deploy Test', function () {
         it("test ZNS register", async function () {
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.connect(addr1).registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.connect(addr1).registerZNS('sher', await addr1.getAddress(), sherPubKey)
 
             await registerZNSTx.wait()
 
             const sherNameHash = namehash.hash('sher.legend');
-            expect(await zkbasProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
+            expect(await BNB-ZKRollupProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
             expect(await znsRegistry.owner(sherNameHash)).to.equal(await addr1.getAddress());
 
             // check price oracle
-            const sherfromzkbasPubKey = ethers.utils.formatBytes32String('sherfromzkbas.legend') // need 1 bnb for fee
+            const sherfromBNB-ZKRollupPubKey = ethers.utils.formatBytes32String('sherfromBNB-ZKRollup.legend') // need 1 bnb for fee
             await expect(
-                zkbasProxy.registerZNS('sherfromzkbas', await addr1.getAddress(), sherfromzkbasPubKey)
+                BNB-ZKRollupProxy.registerZNS('sherfromBNB-ZKRollup', await addr1.getAddress(), sherfromBNB-ZKRollupPubKey)
             ).to.be.revertedWith('nev');
         });
 
         it("test Deposit BNB", async function () {
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
             await registerZNSTx.wait()
 
             const sherNameHash = namehash.hash('sher.legend');
-            expect(await zkbasProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
+            expect(await BNB-ZKRollupProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
             expect(await znsRegistry.owner(sherNameHash)).to.equal(await addr1.getAddress());
 
-            const depositBNBTx = await zkbasProxy.connect(addr1).depositBNB(sherNameHash, {
+            const depositBNBTx = await BNB-ZKRollupProxy.connect(addr1).depositBNB(sherNameHash, {
                 value: ethers.utils.parseEther('1.0'),
             });
             await depositBNBTx.wait()
@@ -139,14 +139,14 @@ describe("Zkbas contract", function () {
 
         it("test Deposit BEP20", async function () {
             // deploy BEP20 token
-            const TokenFactory = await ethers.getContractFactory('ZkbasRelatedERC20')
+            const TokenFactory = await ethers.getContractFactory('BNB-ZKRollupRelatedERC20')
             const token = await TokenFactory.connect(addr1).deploy(10000, '', '')
             await token.deployed()
             expect(await token.balanceOf(addr1.address)).to.equal(10000)
             // set allowance
-            const setAllowanceTx = await token.connect(addr1).approve(zkbasProxy.address, 10000)
+            const setAllowanceTx = await token.connect(addr1).approve(BNB-ZKRollupProxy.address, 10000)
             await setAllowanceTx.wait()
-            expect(await token.allowance(addr1.address, zkbasProxy.address)).to.equal(10000)
+            expect(await token.allowance(addr1.address, BNB-ZKRollupProxy.address)).to.equal(10000)
 
             // add asset
             const addAssetTx = await assetGovernance.connect(owner).addAsset(token.address)
@@ -154,35 +154,35 @@ describe("Zkbas contract", function () {
 
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
             await registerZNSTx.wait()
 
             const sherNameHash = namehash.hash('sher.legend');
-            expect(await zkbasProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
+            expect(await BNB-ZKRollupProxy.connect(owner).getAddressByAccountNameHash(sherNameHash)).to.equal(await addr1.getAddress());
             expect(await znsRegistry.owner(sherNameHash)).to.equal(await addr1.getAddress());
 
-            const depositBEP20Tx = await zkbasProxy.connect(addr1).depositBEP20(token.address, 100, sherNameHash);
+            const depositBEP20Tx = await BNB-ZKRollupProxy.connect(addr1).depositBEP20(token.address, 100, sherNameHash);
             await depositBEP20Tx.wait()
-            expect(await token.balanceOf(zkbasProxy.address)).to.equal(100);
+            expect(await token.balanceOf(BNB-ZKRollupProxy.address)).to.equal(100);
         })
 
         it("test Deposit ERC721", async function () {
             // deploy ERC721
-            const ERC721 = await ethers.getContractFactory('ZkbasRelatedERC721');
-            const erc721 = await ERC721.deploy('zkbas', 'ZEC', '0');
+            const ERC721 = await ethers.getContractFactory('BNB-ZKRollupRelatedERC721');
+            const erc721 = await ERC721.deploy('BNB-ZKRollup', 'ZEC', '0');
             await erc721.deployed();
-            const approveTx = await erc721.approve(zkbasProxy.address, '0');
+            const approveTx = await erc721.approve(BNB-ZKRollupProxy.address, '0');
             await approveTx.wait();
-            expect(await erc721.getApproved('0')).to.equal(zkbasProxy.address);
+            expect(await erc721.getApproved('0')).to.equal(BNB-ZKRollupProxy.address);
 
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
             await registerZNSTx.wait()
 
             // deposit erc721 into contract
             const sherNameHash = namehash.hash('sher.legend');
-            const depositNftTx = await zkbasProxy.depositNft(
+            const depositNftTx = await BNB-ZKRollupProxy.depositNft(
                 sherNameHash,
                 erc721.address,
                 '0',
@@ -193,18 +193,18 @@ describe("Zkbas contract", function () {
         it("test RequestFullExit", async function () {
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
             await registerZNSTx.wait()
 
             // deploy BEP20 token
-            const TokenFactory = await ethers.getContractFactory('ZkbasRelatedERC20')
+            const TokenFactory = await ethers.getContractFactory('BNB-ZKRollupRelatedERC20')
             const token = await TokenFactory.connect(addr1).deploy(10000, '', '')
             await token.deployed()
             expect(await token.balanceOf(addr1.address)).to.equal(10000)
             // set allowance
-            const setAllowanceTx = await token.connect(addr1).approve(zkbasProxy.address, 10000)
+            const setAllowanceTx = await token.connect(addr1).approve(BNB-ZKRollupProxy.address, 10000)
             await setAllowanceTx.wait()
-            expect(await token.allowance(addr1.address, zkbasProxy.address)).to.equal(10000)
+            expect(await token.allowance(addr1.address, BNB-ZKRollupProxy.address)).to.equal(10000)
 
             // add asset
             const addAssetTx = await assetGovernance.connect(owner).addAsset(token.address)
@@ -212,7 +212,7 @@ describe("Zkbas contract", function () {
 
             // deposit erc721 into contract
             const sherNameHash = namehash.hash('sher.legend');
-            const requestFullExitTx = await zkbasProxy.connect(addr1).requestFullExit(
+            const requestFullExitTx = await BNB-ZKRollupProxy.connect(addr1).requestFullExit(
                 sherNameHash,
                 token.address,
             );
@@ -222,12 +222,12 @@ describe("Zkbas contract", function () {
         it("test RequestFullExitNft", async function () {
             // register ZNS
             const sherPubKey = ethers.utils.formatBytes32String('sher.legend')
-            const registerZNSTx = await zkbasProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
+            const registerZNSTx = await BNB-ZKRollupProxy.registerZNS('sher', await addr1.getAddress(), sherPubKey)
             await registerZNSTx.wait()
 
             // deposit erc721 into contract
             const sherNameHash = namehash.hash('sher.legend');
-            const requestFullExitTx = await zkbasProxy.connect(addr1).requestFullExitNft(
+            const requestFullExitTx = await BNB-ZKRollupProxy.connect(addr1).requestFullExitNft(
                 sherNameHash,
                 '0x0000000000000000000000000000000000000000',
             );
@@ -237,7 +237,7 @@ describe("Zkbas contract", function () {
 
         it("test create and update Token Pair", async function () {
             // deploy BEP20 token
-            const TokenFactory = await ethers.getContractFactory('ZkbasRelatedERC20')
+            const TokenFactory = await ethers.getContractFactory('BNB-ZKRollupRelatedERC20')
             const token0 = await TokenFactory.connect(addr1).deploy(10000, '', '')
             await token0.deployed()
             expect(await token0.balanceOf(addr1.address)).to.equal(10000)
@@ -246,7 +246,7 @@ describe("Zkbas contract", function () {
             expect(await token1.balanceOf(addr1.address)).to.equal(10000)
             // check 1i
             await expect(
-                zkbasProxy.connect(owner).createPair(token0.address, token1.address)
+                BNB-ZKRollupProxy.connect(owner).createPair(token0.address, token1.address)
             ).to.be.revertedWith('1i')
 
             // add asset
@@ -256,30 +256,30 @@ describe("Zkbas contract", function () {
             await addAssetTx1.wait()
             // check fee limit
             // await expect(
-            //     zkbasProxy.connect(addr1).createPair(token0.address, token1.address)
+            //     BNB-ZKRollupProxy.connect(addr1).createPair(token0.address, token1.address)
             // ).to.be.revertedWith('fee transfer failed')
             // create pair
-            const createTokenPairTx0 = await zkbasProxy.connect(owner).createPair(token0.address, token1.address)
+            const createTokenPairTx0 = await BNB-ZKRollupProxy.connect(owner).createPair(token0.address, token1.address)
             await createTokenPairTx0.wait()
             // await expect(
-            //     await zkbasProxy.totalTokenPairs()
+            //     await BNB-ZKRollupProxy.totalTokenPairs()
             // ).to.equal(1)
             // check token pair exists
             await expect(
-                zkbasProxy.connect(owner).createPair(token1.address, token0.address)
+                BNB-ZKRollupProxy.connect(owner).createPair(token1.address, token0.address)
             ).to.be.revertedWith('ip')
 
             await expect(
-                zkbasProxy.connect(owner).updatePairRate(['0x0000000000000000000000000000000000000000', token0.address, 30, 0, 5])
+                BNB-ZKRollupProxy.connect(owner).updatePairRate(['0x0000000000000000000000000000000000000000', token0.address, 30, 0, 5])
             ).to.be.revertedWith('pne')
             // update
-            const updateTokenPairTx0 = await zkbasProxy.connect(owner).updatePairRate([token0.address, token1.address, 30, 0, 5])
+            const updateTokenPairTx0 = await BNB-ZKRollupProxy.connect(owner).updatePairRate([token0.address, token1.address, 30, 0, 5])
             await updateTokenPairTx0.wait()
         })
     });
 
     // get the keccak256 hash of a specified string name
-    // eg: getKeccak256('zkbas') = '0x621eacce7c1f02dbf62859801a97d1b2903abc1c3e00e28acfb32cdac01ab36d'
+    // eg: getKeccak256('BNB-ZKRollup') = '0x621eacce7c1f02dbf62859801a97d1b2903abc1c3e00e28acfb32cdac01ab36d'
     const getKeccak256 = (name) => {
         return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(name))
     }

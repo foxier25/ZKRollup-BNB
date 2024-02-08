@@ -2,8 +2,8 @@
 
 pragma solidity ^0.7.6;
 
-/// @title Zkbas configuration constants
-/// @author Zkbas Team
+/// @title BNB-ZKRollup configuration constants
+/// @author BNB-ZKRollup Team
 contract Config {
 
     /// @dev Configurable notice period

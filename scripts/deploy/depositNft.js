@@ -1,23 +1,23 @@
 const {ethers} = require("hardhat");
 const namehash = require('eth-ens-namehash')
-const {getDeployedAddresses, getZkbasProxy} = require("./utils");
+const {getDeployedAddresses, getBNB-ZKRollupProxy} = require("./utils");
 
 async function main() {
     const addrs = getDeployedAddresses('info/addresses.json')
-    const zkbas = await getZkbasProxy(addrs.zkbasProxy)
+    const BNB-ZKRollup = await getBNB-ZKRollupProxy(addrs.BNB-ZKRollupProxy)
 
     // tokens
-    const ERC721Factory = await ethers.getContractFactory('ZkbasRelatedERC721')
+    const ERC721Factory = await ethers.getContractFactory('BNB-ZKRollupRelatedERC721')
     const ERC721 = await ERC721Factory.attach(addrs.ERC721)
 
     // deposit bnb
     console.log('Approve Nft...')
     // set allowance
-    let approveTx = await ERC721.approve(zkbas.address, '0');
+    let approveTx = await ERC721.approve(BNB-ZKRollup.address, '0');
     await approveTx.wait();
     // deposit nft
     console.log('Deposit Nft...');
-    let depositERC721Tx = await zkbas.depositNft('sher', addrs.ERC721, '0');
+    let depositERC721Tx = await BNB-ZKRollup.depositNft('sher', addrs.ERC721, '0');
     await depositERC721Tx.wait();
 }
 

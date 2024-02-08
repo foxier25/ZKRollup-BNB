@@ -7,10 +7,10 @@ pragma experimental ABIEncoderV2;
 import "./Bytes.sol";
 import "./Utils.sol";
 
-/// @title zkbas op tools
+/// @title BNB-ZKRollup op tools
 library TxTypes {
 
-    /// @notice zkbas circuit op type
+    /// @notice BNB-ZKRollup circuit op type
     enum TxType {
         EmptyTx,
         RegisterZNS,

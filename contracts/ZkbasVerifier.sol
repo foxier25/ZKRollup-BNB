@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.6;
 
-contract ZkbasVerifier {
+contract BNB-ZKRollupVerifier {
 
     function initialize(bytes calldata) external {}
 

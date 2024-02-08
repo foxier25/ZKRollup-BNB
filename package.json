@@ -1,5 +1,5 @@
 {
-  "name": "zkbas-contract",
+  "name": "BNB-ZKRollup-contract",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bnb-chain/zkbas-contract.git"
+    "url": "git+https://github.com/jsStar580/BNB-ZKRollup-contract.git"
   },
   "keywords": [
-    "zkbas"
+    "BNB-ZKRollup"
   ],
-  "author": "zkbas Team",
+  "author": "BNB-ZKRollup Team",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bnb-chain/zkbas-contract/issues"
+    "url": "https://github.com/jsStar580/BNB-ZKRollup-contract/issues"
   },
-  "homepage": "https://github.com/bnb-chain/zkbas-contract#readme",
+  "homepage": "https://github.com/jsStar580/BNB-ZKRollup-contract#readme",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-waffle": "^2.0.3",

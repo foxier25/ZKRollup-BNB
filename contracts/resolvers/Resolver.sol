@@ -7,7 +7,7 @@ import "./ISupportsInterface.sol";
 import "./profile/IABIResolver.sol";
 import "./profile/IAddrResolver.sol";
 import "./profile/IPubKeyResolver.sol";
-import "./profile/IZkbasPubKeyResolver.sol";
+import "./profile/IBNB-ZKRollupPubKeyResolver.sol";
 
 /**
  * A generic resolver interface which includes all the functions including the ones deprecated
@@ -16,7 +16,7 @@ interface Resolver is
     ISupportsInterface,
     IABIResolver,
     IAddrResolver,
-    IZkbasPubKeyResolver,
+    IBNB-ZKRollupPubKeyResolver,
     IPubKeyResolver,
     INameResolver
 {
@@ -37,9 +37,9 @@ interface Resolver is
     ) external;
 
     // not support yet
-//    function setZkbasPubKey(
+//    function setBNB-ZKRollupPubKey(
 //        bytes32 node,
-//        bytes32 zkbasPubKey
+//        bytes32 BNB-ZKRollupPubKey
 //    ) external;
 
     function multicall(bytes[] calldata data) external returns (bytes[] memory results);

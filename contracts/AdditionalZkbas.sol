@@ -21,9 +21,9 @@ import "./TxTypes.sol";
 
 import "./UpgradeableMaster.sol";
 
-/// @title Zkbas additional main contract
-/// @author Zkbas
-contract AdditionalZkbas is Storage, Config, Events, ReentrancyGuard, IERC721Receiver {
+/// @title BNB-ZKRollup additional main contract
+/// @author BNB-ZKRollup
+contract AdditionalBNB-ZKRollup is Storage, Config, Events, ReentrancyGuard, IERC721Receiver {
     using SafeMath for uint256;
     using SafeMathUInt128 for uint128;
 
@@ -385,7 +385,7 @@ contract AdditionalZkbas is Storage, Config, Events, ReentrancyGuard, IERC721Rec
 
     /// @notice Register full exit nft request - pack pubdata, add priority request
     /// @param _accountName account name
-    /// @param _nftIndex account NFT index in zkbas network
+    /// @param _nftIndex account NFT index in BNB-ZKRollup network
     function requestFullExitNft(string calldata _accountName, uint32 _nftIndex) public {
         requireActive();
         bytes32 accountNameHash = znsController.getSubnodeNameHash(_accountName);
@@ -502,7 +502,7 @@ contract AdditionalZkbas is Storage, Config, Events, ReentrancyGuard, IERC721Rec
         emit Deposit(_assetId, _accountNameHash, _amount);
     }
 
-    event NewZkbasVerifier(address verifier);
+    event NewBNB-ZKRollupVerifier(address verifier);
 
     bytes32 private constant EMPTY_STRING_KECCAK = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
 
@@ -542,9 +542,9 @@ contract AdditionalZkbas is Storage, Config, Events, ReentrancyGuard, IERC721Rec
     }
     // @dev This function is only for test
     // TODO delete this function
-    function updateZkbasVerifier(address _newVerifierAddress) external {
-        verifier = ZkbasVerifier(_newVerifierAddress);
-        emit NewZkbasVerifier(_newVerifierAddress);
+    function updateBNB-ZKRollupVerifier(address _newVerifierAddress) external {
+        verifier = BNB-ZKRollupVerifier(_newVerifierAddress);
+        emit NewBNB-ZKRollupVerifier(_newVerifierAddress);
     }
 
     /// @dev Process one block commit using previous block StoredBlockInfo,

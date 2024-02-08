@@ -22,16 +22,16 @@ async function getContractFactories() {
     await utils.deployed()
 
     return {
-        TokenFactory: await ethers.getContractFactory('ZkbasRelatedERC20'),
-        ERC721Factory: await ethers.getContractFactory('ZkbasRelatedERC721'),
+        TokenFactory: await ethers.getContractFactory('BNB-ZKRollupRelatedERC20'),
+        ERC721Factory: await ethers.getContractFactory('BNB-ZKRollupRelatedERC721'),
         ZNSRegistry: await ethers.getContractFactory('ZNSRegistry'),
         ZNSResolver: await ethers.getContractFactory('PublicResolver'),
         ZNSPriceOracle: await ethers.getContractFactory('StablePriceOracle'),
         ZNSController: await ethers.getContractFactory('ZNSController'),
         Governance: await ethers.getContractFactory('Governance'),
         AssetGovernance: await ethers.getContractFactory('AssetGovernance'),
-        Verifier: await ethers.getContractFactory('ZkbasVerifier'),
-        Zkbas: await ethers.getContractFactory('Zkbas', {
+        Verifier: await ethers.getContractFactory('BNB-ZKRollupVerifier'),
+        BNB-ZKRollup: await ethers.getContractFactory('BNB-ZKRollup', {
             libraries: {
                 Utils: utils.address
             }

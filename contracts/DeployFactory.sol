@@ -6,8 +6,8 @@ import "./Governance.sol";
 import "./AssetGovernance.sol";
 import "./Proxy.sol";
 import "./UpgradeGatekeeper.sol";
-import "./Zkbas.sol";
-import "./ZkbasVerifier.sol";
+import "./BNB-ZKRollup.sol";
+import "./BNB-ZKRollupVerifier.sol";
 import "./Config.sol";
 import "./ZNSController.sol";
 
@@ -17,7 +17,7 @@ contract DeployFactory {
     Proxy verifier;
     Proxy znsController;
     Proxy znsResolver;
-    Proxy zkbas;
+    Proxy BNB-ZKRollup;
 
     // This struct is used for avoiding StackTooDeep
     struct AdditionalParams {
@@ -36,8 +36,8 @@ contract DeployFactory {
     ///      giving us simplicity and atomicity of our deployment.
     constructor(
         Governance _governanceTarget,
-        ZkbasVerifier _verifierTarget,
-        Zkbas _zkbasTarget,
+        BNB-ZKRollupVerifier _verifierTarget,
+        BNB-ZKRollup _BNB-ZKRollupTarget,
         ZNSController _znsControllerTarget,
         PublicResolver _znsResolverTarget,
         bytes32 _genesisAccountRoot,
@@ -68,7 +68,7 @@ contract DeployFactory {
         deployProxyContracts(
             _governanceTarget,
             _verifierTarget,
-            _zkbasTarget,
+            _BNB-ZKRollupTarget,
             _znsControllerTarget,
             _znsResolverTarget,
             params
@@ -77,12 +77,12 @@ contract DeployFactory {
         selfdestruct(msg.sender);
     }
 
-    event Addresses(address governance, address assetGovernance, address verifier, address znsController, address znsResolver, address zkbas, address gatekeeper);
+    event Addresses(address governance, address assetGovernance, address verifier, address znsController, address znsResolver, address BNB-ZKRollup, address gatekeeper);
 
     function deployProxyContracts(
         Governance _governanceTarget,
-        ZkbasVerifier _verifierTarget,
-        Zkbas _zkbasTarget,
+        BNB-ZKRollupVerifier _verifierTarget,
+        BNB-ZKRollup _BNB-ZKRollupTarget,
         ZNSController _znsControllerTarget,
         PublicResolver _znsResolverTarget,
         AdditionalParams memory _additionalParams
@@ -103,12 +103,12 @@ contract DeployFactory {
         verifier = new Proxy(address(_verifierTarget), abi.encode());
         znsController = new Proxy(address(_znsControllerTarget), abi.encode(_additionalParams.zns, _additionalParams.priceOracle, _additionalParams.baseNode));
         znsResolver = new Proxy(address(_znsResolverTarget), abi.encode(_additionalParams.zns));
-        AdditionalZkbas additionalZkbas = new AdditionalZkbas();
-        zkbas = new Proxy(
-            address(_zkbasTarget),
-            abi.encode(address(governance), address(verifier), address(additionalZkbas), address(znsController), address(znsResolver), _additionalParams.genesisAccountRoot));
+        AdditionalBNB-ZKRollup additionalBNB-ZKRollup = new AdditionalBNB-ZKRollup();
+        BNB-ZKRollup = new Proxy(
+            address(_BNB-ZKRollupTarget),
+            abi.encode(address(governance), address(verifier), address(additionalBNB-ZKRollup), address(znsController), address(znsResolver), _additionalParams.genesisAccountRoot));
 
-        UpgradeGatekeeper upgradeGatekeeper = new UpgradeGatekeeper(zkbas);
+        UpgradeGatekeeper upgradeGatekeeper = new UpgradeGatekeeper(BNB-ZKRollup);
 
         governance.transferMastership(address(upgradeGatekeeper));
         upgradeGatekeeper.addUpgradeable(address(governance));
@@ -122,17 +122,17 @@ contract DeployFactory {
         znsResolver.transferMastership(address(upgradeGatekeeper));
         upgradeGatekeeper.addUpgradeable(address(znsResolver));
 
-        zkbas.transferMastership(address(upgradeGatekeeper));
-        upgradeGatekeeper.addUpgradeable(address(zkbas));
+        BNB-ZKRollup.transferMastership(address(upgradeGatekeeper));
+        upgradeGatekeeper.addUpgradeable(address(BNB-ZKRollup));
 
         upgradeGatekeeper.transferMastership(_additionalParams.governor);
 
         emit Addresses(address(governance), address(assetGovernance), address(verifier), address(znsController),
-            address(znsResolver), address(zkbas), address(upgradeGatekeeper));
+            address(znsResolver), address(BNB-ZKRollup), address(upgradeGatekeeper));
 
         // finally set governance
         finalizeGovernance(Governance(address(governance)), assetGovernance, _additionalParams.validator, _additionalParams.governor);
-        finalizeZNSController(ZNSController(address(znsController)), address(zkbas));
+        finalizeZNSController(ZNSController(address(znsController)), address(BNB-ZKRollup));
     }
 
     function finalizeGovernance(
@@ -148,9 +148,9 @@ contract DeployFactory {
 
     function finalizeZNSController(
         ZNSController _znsController,
-        address _zkbas
+        address _BNB-ZKRollup
     ) internal {
-        _znsController.addController(_zkbas);
-        _znsController.transferOwnership(_zkbas);
+        _znsController.addController(_BNB-ZKRollup);
+        _znsController.transferOwnership(_BNB-ZKRollup);
     }
 }

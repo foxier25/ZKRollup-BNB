@@ -2,7 +2,7 @@ const {expect} = require("chai");
 const {ethers} = require("hardhat");
 const namehash = require('eth-ens-namehash')
 
-describe("Zkbas contract", function () {
+describe("BNB-ZKRollup contract", function () {
     describe('RegisterZNS', function () {
         it("register", async function () {
             // deploy zns
@@ -70,7 +70,7 @@ describe("Zkbas contract", function () {
             address _treasury
              */
 
-            const TokenFactory = await ethers.getContractFactory('ZkbasRelatedERC20')
+            const TokenFactory = await ethers.getContractFactory('BNB-ZKRollupRelatedERC20')
             const token = await TokenFactory.deploy(10000, '', '')
             await token.deployed()
 
@@ -90,57 +90,57 @@ describe("Zkbas contract", function () {
             await changeAssetGovernanceTx.wait()
 
             // deploy verifier
-            const Verifier = await ethers.getContractFactory('ZkbasVerifier')
+            const Verifier = await ethers.getContractFactory('BNB-ZKRollupVerifier')
             const verifier = await Verifier.deploy()
             await verifier.deployed()
             // deploy utils
             const Utils = await ethers.getContractFactory("Utils")
             const utils = await Utils.deploy()
             await utils.deployed()
-            // deploy zkbas
-            console.log('start deploy zkbas.....')
-            const Zkbas = await ethers.getContractFactory('Zkbas', {
+            // deploy BNB-ZKRollup
+            console.log('start deploy BNB-ZKRollup.....')
+            const BNB-ZKRollup = await ethers.getContractFactory('BNB-ZKRollup', {
                 libraries: {
                     Utils: utils.address
                 }
             })
-            const zkbas = await Zkbas.deploy()
-            await zkbas.deployed()
+            const BNB-ZKRollup = await BNB-ZKRollup.deploy()
+            await BNB-ZKRollup.deployed()
 
             // add controller for zns fifs registrar
-            const addControllerTx = await znsController.addController(zkbas.address);
+            const addControllerTx = await znsController.addController(BNB-ZKRollup.address);
             await addControllerTx.wait();
 
-            const isController = await znsController.controllers(zkbas.address)
+            const isController = await znsController.controllers(BNB-ZKRollup.address)
             console.log(isController)
 
-            // deploy additional zkbas
-            const AdditionalZkbas = await ethers.getContractFactory('AdditionalZkbas')
-            const additionalZkbas = await AdditionalZkbas.deploy()
-            await additionalZkbas.deployed()
+            // deploy additional BNB-ZKRollup
+            const AdditionalBNB-ZKRollup = await ethers.getContractFactory('AdditionalBNB-ZKRollup')
+            const additionalBNB-ZKRollup = await AdditionalBNB-ZKRollup.deploy()
+            await additionalBNB-ZKRollup.deployed()
 
             const _genesisAccountRoot = '0x01ef55cdf3b9b0d65e6fb6317f79627534d971fd96c811281af618c0028d5e7a'
-            const zkbasInitParams = ethers.utils.defaultAbiCoder.encode(
+            const BNB-ZKRollupInitParams = ethers.utils.defaultAbiCoder.encode(
                 ['address', 'address', 'address', 'address', 'address', 'bytes32'],
                 [
                     governance.address,
                     verifier.address,
-                    additionalZkbas.address,
+                    additionalBNB-ZKRollup.address,
                     znsController.address,
                     publicResolver.address,
                     _genesisAccountRoot,
                 ],
             )
-            const zkbasInitTx = await zkbas.initialize(zkbasInitParams)
-            await zkbasInitTx.wait()
+            const BNB-ZKRollupInitTx = await BNB-ZKRollup.initialize(BNB-ZKRollupInitParams)
+            await BNB-ZKRollupInitTx.wait()
 
-            const registerZNSTx = await zkbas.registerZNS('sher',
+            const registerZNSTx = await BNB-ZKRollup.registerZNS('sher',
                 '0xDA00601380Bc7aE4fe67dA2EB78f9161570c9EB4',
                 '0x6788fdbc635cf86e266853a628b2743643df5c1db1a4f9afbb13bca103322e9a')
             await registerZNSTx.wait()
 
             const hashVal = namehash.hash('sher.legend');
-            const addr = await zkbas.getAddressByAccountNameHash(hashVal)
+            const addr = await BNB-ZKRollup.getAddressByAccountNameHash(hashVal)
             console.log('addr:', addr)
         });
     });

@@ -9,7 +9,7 @@ import "../UpgradeableMaster.sol";
 
 
 /// @dev Test target contract to upgrade to
-contract zkbasUpgradeTargetTest is UpgradeableMaster, Config, StorageTest {
+contract BNB-ZKRollupUpgradeTargetTest is UpgradeableMaster, Config, StorageTest {
 
     using SafeMath for uint256;
     using SafeMathUInt128 for uint128;

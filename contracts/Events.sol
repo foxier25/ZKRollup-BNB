@@ -5,8 +5,8 @@ pragma solidity ^0.7.6;
 import "./Upgradeable.sol";
 import "./TxTypes.sol";
 
-/// @title Zkbas events
-/// @author Zkbas Team
+/// @title BNB-ZKRollup events
+/// @author BNB-ZKRollup Team
 interface Events {
     /// @notice Event emitted when a block is committed
     event BlockCommit(uint32 blockNumber);
@@ -14,10 +14,10 @@ interface Events {
     /// @notice Event emitted when a block is verified
     event BlockVerification(uint32 blockNumber);
 
-    /// @notice Event emitted when user funds are withdrawn from the Zkbas state and contract
+    /// @notice Event emitted when user funds are withdrawn from the BNB-ZKRollup state and contract
     event Withdrawal(uint16 assetId, uint128 amount);
 
-    /// @notice Event emitted when user funds are deposited to the zkbas account
+    /// @notice Event emitted when user funds are deposited to the BNB-ZKRollup account
     event Deposit(uint16 assetId, bytes32 accountName, uint128 amount);
 
     /// @notice Event emitted when blocks are reverted
@@ -39,14 +39,14 @@ interface Events {
         string name,
         bytes32 nameHash,
         address owner,
-        bytes32 zkbasPubKeyX,
-        bytes32 zkbasPubKeyY,
+        bytes32 BNB-ZKRollupPubKeyX,
+        bytes32 BNB-ZKRollupPubKeyY,
         uint32 accountIndex
     );
 
     /// @notice Deposit committed event.
     event DepositCommit(
-        uint32 indexed zkbasBlockNumber,
+        uint32 indexed BNB-ZKRollupBlockNumber,
         uint32 indexed accountIndex,
         bytes32 accountName,
         uint16 indexed assetId,
@@ -55,7 +55,7 @@ interface Events {
 
     /// @notice Full exit committed event.
     event FullExitCommit(
-        uint32 indexed zkbasBlockId,
+        uint32 indexed BNB-ZKRollupBlockId,
         uint32 indexed accountId,
         address owner,
         uint16 indexed tokenId,
@@ -111,7 +111,7 @@ interface Events {
 }
 
 /// @title Upgrade events
-/// @author Zkbas Team
+/// @author BNB-ZKRollup Team
 interface UpgradeEvents {
     /// @notice Event emitted when new upgradeable contract is added to upgrade gatekeeper's list of managed contracts
     event NewUpgradable(uint256 indexed versionId, address indexed upgradeable);

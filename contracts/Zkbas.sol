@@ -23,9 +23,9 @@ import "./Config.sol";
 import "./ZNSController.sol";
 import "./Proxy.sol";
 
-/// @title Zkbas main contract
-/// @author Zkbas Team
-contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpgradeable, IERC721Receiver {
+/// @title BNB-ZKRollup main contract
+/// @author BNB-ZKRollup Team
+contract BNB-ZKRollup is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpgradeable, IERC721Receiver {
     using SafeMath for uint256;
     using SafeMathUInt128 for uint128;
     using SafeMathUInt32 for uint32;
@@ -132,7 +132,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         }
     }
 
-    /// @notice Zkbas contract initialization. Can be external because Proxy contract intercepts illegal calls of this function.
+    /// @notice BNB-ZKRollup contract initialization. Can be external because Proxy contract intercepts illegal calls of this function.
     /// @param initializationParameters Encoded representation of initialization parameters:
     /// @dev _governanceAddress The address of Governance contract
     /// @dev _verifierAddress The address of Verifier contract
@@ -143,15 +143,15 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         (
         address _governanceAddress,
         address _verifierAddress,
-        address _additionalZkbas,
+        address _additionalBNB-ZKRollup,
         address _znsController,
         address _znsResolver,
         bytes32 _genesisStateRoot
         ) = abi.decode(initializationParameters, (address, address, address, address, address, bytes32));
 
-        verifier = ZkbasVerifier(_verifierAddress);
+        verifier = BNB-ZKRollupVerifier(_verifierAddress);
         governance = Governance(_governanceAddress);
-        additionalZkbas = AdditionalZkbas(_additionalZkbas);
+        additionalBNB-ZKRollup = AdditionalBNB-ZKRollup(_additionalBNB-ZKRollup);
         znsController = ZNSController(_znsController);
         znsResolver = PublicResolver(_znsResolver);
 
@@ -186,9 +186,9 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         delegateAdditional();
     }
 
-    function registerZNS(string calldata _name, address _owner, bytes32 _zkbasPubKeyX, bytes32 _zkbasPubKeyY) external payable nonReentrant {
+    function registerZNS(string calldata _name, address _owner, bytes32 _BNB-ZKRollupPubKeyX, bytes32 _BNB-ZKRollupPubKeyY) external payable nonReentrant {
         // Register ZNS
-        (bytes32 node,uint32 accountIndex) = znsController.registerZNS{value : msg.value}(_name, _owner, _zkbasPubKeyX, _zkbasPubKeyY, address(znsResolver));
+        (bytes32 node,uint32 accountIndex) = znsController.registerZNS{value : msg.value}(_name, _owner, _BNB-ZKRollupPubKeyX, _BNB-ZKRollupPubKeyY, address(znsResolver));
 
         // Priority Queue request
         TxTypes.RegisterZNS memory _tx = TxTypes.RegisterZNS({
@@ -196,8 +196,8 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         accountIndex : accountIndex,
         accountName : Utils.stringToBytes32(_name),
         accountNameHash : node,
-        pubKeyX : _zkbasPubKeyX,
-        pubKeyY : _zkbasPubKeyY
+        pubKeyX : _BNB-ZKRollupPubKeyX,
+        pubKeyY : _BNB-ZKRollupPubKeyY
         });
         // compact pub data
         bytes memory pubData = TxTypes.writeRegisterZNSPubDataForPriorityQueue(_tx);
@@ -205,7 +205,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         // add into priority request queue
         addPriorityRequest(TxTypes.TxType.RegisterZNS, pubData);
 
-        emit RegisterZNS(_name, node, _owner, _zkbasPubKeyX, _zkbasPubKeyY, accountIndex);
+        emit RegisterZNS(_name, node, _owner, _BNB-ZKRollupPubKeyX, _BNB-ZKRollupPubKeyY, accountIndex);
     }
 
     function getAddressByAccountNameHash(bytes32 accountNameHash) public view returns (address){
@@ -291,7 +291,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
             nftContentHash : l2Nfts[nftKey].nftContentHash,
             collectionId : l2Nfts[nftKey].collectionId
             });
-            try NFTFactory(_factoryAddress).mintFromZkbas(
+            try NFTFactory(_factoryAddress).mintFromBNB-ZKRollup(
                 _creatorAddress,
                 op.toAddress,
                 op.nftIndex,
@@ -344,11 +344,11 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         return pendingBalances[packAddressAndAssetId(_address, assetId)].balanceToWithdraw;
     }
 
-    /// @notice  Withdraws tokens from Zkbas contract to the owner
+    /// @notice  Withdraws tokens from BNB-ZKRollup contract to the owner
     /// @param _owner Address of the tokens owner
     /// @param _token Address of tokens, zero address is used for Native Asset
     /// @param _amount Amount to withdraw to request.
-    ///         NOTE: We will call ERC20.transfer(.., _amount), but if according to internal logic of ERC20 token Zkbas contract
+    ///         NOTE: We will call ERC20.transfer(.., _amount), but if according to internal logic of ERC20 token BNB-ZKRollup contract
     ///         balance will be decreased by value more then _amount we will try to subtract this value from user pending balance
     function withdrawPendingBalance(
         address payable _owner,
@@ -553,7 +553,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
         } else {
             address tokenAddr = governance.assetAddresses(_assetId);
             // We use `_transferERC20` here to check that `ERC20` token indeed transferred `_amount`
-            // and fail if token subtracted from Zkbas balance more then `_amount` that was requested.
+            // and fail if token subtracted from BNB-ZKRollup balance more then `_amount` that was requested.
             // This can happen if token subtracts fee from sender while transferring `_amount` that was requested to transfer.
             try this.transferERC20{gas : WITHDRAWAL_GAS_LIMIT}(IERC20(tokenAddr), _recipient, _amount, _amount) {
                 sent = true;
@@ -854,7 +854,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
 
     /// @notice Register full exit nft request - pack pubdata, add priority request
     /// @param _accountName account name
-    /// @param _nftIndex account NFT index in zkbas network
+    /// @param _nftIndex account NFT index in BNB-ZKRollup network
     function requestFullExitNft(string calldata _accountName, uint32 _nftIndex) public {
         delegateAdditional();
     }
@@ -902,7 +902,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
     /// @notice Should be only use to delegate the external calls as it passes the calldata
     /// @notice All functions delegated to additional contract should NOT be nonReentrant
     function delegateAdditional() internal {
-        address _target = address(additionalZkbas);
+        address _target = address(additionalBNB-ZKRollup);
         assembly {
         // The pointer to the free memory slot
             let ptr := mload(0x40)
@@ -940,7 +940,7 @@ contract Zkbas is UpgradeableMaster, Events, Storage, Config, ReentrancyGuardUpg
 
     // @dev This function is only for test
     // TODO delete this funcFtion
-    function updateZkbasVerifier(address _newVerifierAddress) external {
+    function updateBNB-ZKRollupVerifier(address _newVerifierAddress) external {
         delegateAdditional();
     }
 

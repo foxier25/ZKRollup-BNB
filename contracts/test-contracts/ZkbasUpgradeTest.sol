@@ -7,7 +7,7 @@ import "../Config.sol";
 import "../SafeMathUInt128.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-contract ZkbasUpgradeTest is UpgradeableMaster, StorageTest, Config {
+contract BNB-ZKRollupUpgradeTest is UpgradeableMaster, StorageTest, Config {
     using SafeMath for uint256;
     using SafeMathUInt128 for uint128;
 

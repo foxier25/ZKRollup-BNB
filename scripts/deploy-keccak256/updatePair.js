@@ -1,14 +1,14 @@
 const {ethers} = require("hardhat");
 const namehash = require('eth-ens-namehash')
-const {getDeployedAddresses, getZkbasProxy} = require("./utils");
+const {getDeployedAddresses, getBNB-ZKRollupProxy} = require("./utils");
 
 async function main() {
     const addrs = getDeployedAddresses('info/addresses.json')
-    const zkbas = await getZkbasProxy(addrs.zkbasProxy)
+    const BNB-ZKRollup = await getBNB-ZKRollupProxy(addrs.BNB-ZKRollupProxy)
 
     // Update pair
     console.log('update pair rate...')
-    const updatePairRateTx = await zkbas.updatePairRate(['0x0000000000000000000000000000000000000000', addrs.LEGToken, 50, 0, 10])
+    const updatePairRateTx = await BNB-ZKRollup.updatePairRate(['0x0000000000000000000000000000000000000000', addrs.LEGToken, 50, 0, 10])
     await updatePairRateTx.wait()
 }
 
